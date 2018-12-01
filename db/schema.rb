@@ -10,10 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030221329) do
+ActiveRecord::Schema.define(version: 20181130002722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "autor_livros", force: :cascade do |t|
+    t.integer  "autor_id"
+    t.integer  "livro_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["autor_id"], name: "index_autor_livros_on_autor_id", using: :btree
+    t.index ["livro_id"], name: "index_autor_livros_on_livro_id", using: :btree
+  end
+
+  create_table "autors", force: :cascade do |t|
+    t.string   "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "livros", force: :cascade do |t|
+    t.string   "titulo"
+    t.float    "preco",           default: 0.0
+    t.string   "isbn"
+    t.date     "data_publicacao"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
@@ -37,4 +61,6 @@ ActiveRecord::Schema.define(version: 20181030221329) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  add_foreign_key "autor_livros", "autors"
+  add_foreign_key "autor_livros", "livros"
 end
