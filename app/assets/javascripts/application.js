@@ -48,8 +48,8 @@ $(document).ready(function() {
         "last":       "Últ.",
         "next":       "Próx.",
         "previous":   "Ant."
-      },            
-    },          
+      },
+    },
   });
 
   $('#autor').on('change', function() {

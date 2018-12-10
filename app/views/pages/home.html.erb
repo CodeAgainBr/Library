@@ -135,7 +135,7 @@
 		preco = $("#txt_preco_livro").val();
 		publicacao = $("#txt_publicacao_livro").val();
 		
-		if (titulo != "" && isbn != "" && preco != 0.0 && publicacao != "") {
+		if (titulo != "" && isbn != "" && preco != 0.0 && publicacao != "" && listaAutores[0] != "") {
 			$.ajax({
 				url: "/update/livro",
 				data: {
@@ -144,9 +144,8 @@
 					preco: preco,
 					publicacao: publicacao
 				},
-				success: {
-					alert("Livro cadastrado com sucesso"),
-					salvarAutorLivro()
+				success: function(){
+					alert("Livro cadastrado com sucesso");
 				}
 			});
 		}else{
@@ -169,5 +168,34 @@
 		}else{
 			alert("Campo não preenchidos!");
 		}
+	}
+
+	function salvarAutorLivro(){
+
+	}
+
+	function getAutor(){
+		$.get(
+			URL: "/get/autor/1",
+			data: {
+				nome: $("#nome-autor").val()
+			},
+			function(data,status,xhr){
+				alert("Data: " + data + "\nStatus: " + status);
+			}
+		);
+
+		$.get({
+			url: "/get/autor",
+			data: {
+				nome: $("#nome-autor").val()
+			},
+			success: function(responseText){
+				alert(responseText);
+			},
+			error: function(){
+				alert("Campo não preenchidos!");
+			}
+		});
 	}
 </script>

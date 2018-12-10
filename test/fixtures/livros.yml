@@ -2,14 +2,12 @@
 
 one:
   titulo: MyString
-  preco: 1.5
   isbn: MyString
-  data_publicacao: 2018-11-29
-  autor: 
+  preco: 1.5
+  data_publicacao: 2018-12-03
 
 two:
   titulo: MyString
-  preco: 1.5
   isbn: MyString
-  data_publicacao: 2018-11-29
-  autor: 
+  preco: 1.5
+  data_publicacao: 2018-12-03
