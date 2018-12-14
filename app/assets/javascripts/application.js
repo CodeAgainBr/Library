@@ -29,7 +29,7 @@ toastr.options = {
 // code Leo
 
 $(document).ready(function() {
-  $('#datatable').DataTable( {
+  $('#datatable').DataTable({
     "language": {
       "decimal":        "",
       "emptyTable":     "Nenhum livro disponível na tabela.",
@@ -49,7 +49,7 @@ $(document).ready(function() {
         "next":       "Próx.",
         "previous":   "Ant."
       },
-    },
+    }
   });
 
   $('#autor').on('change', function() {
@@ -57,24 +57,122 @@ $(document).ready(function() {
       $('.novo-autor-row').removeClass('d-none');
     } else {
       $('.novo-autor-row').addClass('d-none');
-    }
-    if($(this).find(":checked").val() != "Escolha um Autor" && $(this).find(":checked").val() != "Adicionar novo Autor") {
-      $('#autor-list').append(`<li class="list-group-item">${$(this).find(":checked").val()}<i class="remover-autor fa fa-times ml-1"></i></li>`);
-      $('.remover-autor').click(function() {
-        $(this).parent('.list-group-item').remove();
-      });       
-    }
-  });
 
-  $('.btn-salvar-autor').click(function() {
-    if($('#nome_autor').val() != "") {
-      $('#autor').append(`<option>${$('#nome-autor').val()}</option>`);
-      $('#autor-list').append(`<li class="list-group-item">${$('#nome-autor').val()}<i class="remover-autor fa fa-times ml-1"></i></li>`);
-      $('#nome-autor').val('');
-      $('.lista_autores').removeClass('d-none');
-      $('.remover-autor').click(function() {
-        $(this).parent('.list-group-item').remove();
-      });     
+      if($(this).find(":checked").val() != "Escolha um Autor") {
+        setAuthor($(this).find(":checked").val());
+      }
     }
   });
 });
+
+function addBook() {
+  titulo = $("#txt_titulo_livro").val();
+  isbn = $("#txt_isbn_livro").val();
+  preco = $("#txt_preco_livro").val();
+  publicacao = $("#txt_publicacao_livro").val();
+  listaAutores = $(".list-group-item");
+
+
+  if (titulo != "" && isbn != "" && preco != 0.0 && publicacao != "" && listaAutores[0] != "") {
+    $.ajax({
+      url: "/update/livro",
+      data: {
+        titulo: titulo,
+        isbn: isbn,
+        preco: preco,
+        publicacao: publicacao
+      },
+      success: function(result){
+        toastr["success"]("Livro cadastrado com sucesso.");
+        for (var i = 0; i < listaAutores.length; i++) {
+          setAutorLivro(listaAutores[i].id, titulo);
+        }
+      },
+      error: function() {
+        toastr["warning"]("Falha ao cadastrar livro.");
+      }
+    });
+  } else {
+    toastr["warning"]("Campos não preenchidos!");
+  }
+}
+
+function getBooks(){var books = "";
+  $.get({url: "/get/livro"});
+}
+
+function updateBooksList() {
+  $(document).ajaxComplete(function( event, xhr, settings ) {
+    if (settings.url === "/get/livro") {
+      table = $("#datatable").DataTable();
+      table.clear();
+
+      books = JSON.parse(xhr.responseText)
+
+      console.log(books);
+
+      for (var i = books.length; i > 0; i--) {
+        temp = books[i-1];
+        book = [temp.titulo, temp.isbn, temp.preco + "", temp.data_publicacao, ""];
+        table.row.add(book).draw();
+      }
+    }
+  });
+  getBooks();
+}
+
+function addAuthor() {
+  autor = $("#nome-autor").val();
+  $("#nome-autor").val("");
+  $(".novo-autor-row").addClass("d-none");
+
+  if(autor != "") {
+    listaAutores[listaAutores.lenght] = $("#nome-autor").val();
+    $.ajax({
+      url: "/update/autor/" + autor,
+      success: function(result, status, xhr) {
+        toastr["success"]("Autor cadastrado com sucesso.");
+      },
+      error: function(erro) {
+        toastr["warning"]("Falha ao cadastrar autor.");
+      }
+    });
+  } else {
+    toastr["warning"]("Campo não preenchido!");
+  }
+
+  setAuthor(autor);
+  getAuthors();
+}
+
+function setAuthor(name) {
+  if(typeof($("#"+name)) !== "undefined") {
+    $('#autor-list').append('<li id="'+name+'" class="list-group-item">'+name+'<span class="remover-autor"><i class="fa fa-times ml-1"></i></span></li>');
+    $('.lista-autores').removeClass('d-none');
+    $('#'+name+' .remover-autor').click(function() {
+      $('#'+name).remove();
+
+      if($('#autor-list').html() == "") {
+        $('.lista-autores').addClass('d-none');
+      }
+    });
+  }
+}
+
+function getAuthors(){
+  $.ajax({
+    url: "/get/autor",
+    method: "get",
+    dataType: "json",
+    success: function(result, status, xhr){
+      updateAuthorsList(result);
+    }
+  });
+}
+
+function setAutorLivro(autor, livro) {
+  $.ajax({
+    url: "/update/autor_livro",
+    data: {nome: autor, livro: livro}
+  });
+}
