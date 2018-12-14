@@ -1,15 +1,27 @@
-<h2>Entrar</h2>
+<section class="pt-5">
+	<div class="container mt-5 pt-5">
+		<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+			<div class="card mx-auto col-5 px-0 shadow">
+				<div class="card-head px-5 pt-5">
+					<h3 class="card-title text-center">Entrar</h3>
+				</div>
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="form-inputs">
-    <%= f.input :login, required: true, autofocus: true, input_html: { autocomplete: "email" } %>
-    <%= f.input :password, required: false, input_html: { autocomplete: "current-password" } %>
-    <%= f.input :remember_me, label: "Permanecer ativo", as: :boolean if devise_mapping.rememberable? %>
-  </div>
+				<div class="card-body px-5 py-3">
+				  <div class="form-inputs">
+				    <%= f.input :login, required: true, autofocus: true, input_html: { autocomplete: "login", class: "b-primary" } %>
+				    <%= f.input :password, required: true, input_html: { autocomplete: "current-password", class: "b-primary" } %>
+				  </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Entrar" %>
-  </div>
-<% end %>
+				  <div class="form-actions">
+				  	<%= f.input :remember_me, label: "Permanecer ativo", as: :boolean if devise_mapping.rememberable? %>
+				  </div>
+				</div>
 
-<%= render "devise/shared/links" %>
+				<div class="card-footer row no-gutters">
+					<%= link_to "Registrar-se", new_registration_path(resource_name), class: "line-height" %>
+					<%= f.button :submit, "Entrar", class: "ml-auto btn-success" %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</section>

@@ -34,8 +34,11 @@
 										<% @autores_livros = AutorLivro.where(livro: livro) %>
 										<%
 											@tmp = ""
-											@autores_livros.each do |autor_livro|
+											@autores_livros.each_with_index do |autor_livro, index|
 												@tmp += Autor.find(autor_livro.autor).nome
+												unless @autores_livros.length-1 == index
+													@tmp += ", "
+												end
 											end
 										%>
 

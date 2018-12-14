@@ -45,25 +45,38 @@ class PagesController < ApplicationController
 		@livro = Array.new()
 		if params[:titulo]
 			@livro = Livro.where(titulo: params[:titulo])[0]
+			@authors = Array.new()
+
+			AutorLivro.where(livro_id: @livro).each do |al|
+				@authors.push(Autor.find(al.autor_id))
+			end
+
 			@livro = Array.new([
 				id: @livro.id,
 				titulo: @livro.titulo,
 				isbn: @livro.isbn,
 				preco: @livro.preco,
-				data_publicacao: @livro.data_publicacao,
-				autores: AutorLivro.where(livro_id: @livro)
+				data_publicacao: @livro.data_publicacao.strftime("%d/%m/%Y"),
+				autores: @authors
 			])
 		else
 			@temp = Livro.all
 			@livro = Array.new()
+
 			@temp.each do |l|
+				@authors = Array.new()
+
+				AutorLivro.where(livro_id: l).each do |al|
+					@authors.push(Autor.find(al.autor_id))
+				end
+				
 				l = Array.new([
 					id: l.id,
 					titulo: l.titulo,
 					isbn: l.isbn,
 					preco: l.preco,
 					data_publicacao: l.data_publicacao.strftime("%d/%m/%Y"),
-					autores: AutorLivro.where(livro_id: l)
+					autores: @authors
 				])
 				@livro.push(l[0])
 			end

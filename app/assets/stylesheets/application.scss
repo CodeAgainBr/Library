@@ -9,3 +9,14 @@
 .b-0 {
 	border: 0;
 }
+
+.b-primary:focus {
+  height: 50px;
+  width: 110%;
+  margin-left: -5%;
+  box-shadow: 0px 0px 5px 3px #007bff;
+}
+
+.line-height {
+	line-height: 2.5;
+}

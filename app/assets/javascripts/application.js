@@ -103,7 +103,7 @@ function getBooks(){var books = "";
 
 function updateBooksList() {
   $(document).ajaxComplete(function( event, xhr, settings ) {
-    if (settings.url === "/get/livro") {
+    if(settings.url === "/get/livro") {
       table = $("#datatable").DataTable();
       table.clear();
 
@@ -111,9 +111,16 @@ function updateBooksList() {
 
       console.log(books);
 
-      for (var i = books.length; i > 0; i--) {
-        temp = books[i-1];
-        book = [temp.titulo, temp.isbn, temp.preco + "", temp.data_publicacao, ""];
+      for(var i = 0; i < books.length; i++) {
+        temp = books[i];
+        authors = "";
+        for(var j = 0; j < temp.autores.length; j++) {
+          authors += temp.autores[j].nome
+          if(temp.autores.length-1 != j) {
+            authors += ", ";
+          }
+        }
+        book = [temp.titulo, temp.isbn, temp.preco + "", temp.data_publicacao, authors];
         table.row.add(book).draw();
       }
     }
